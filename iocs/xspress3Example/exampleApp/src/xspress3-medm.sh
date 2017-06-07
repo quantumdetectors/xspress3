@@ -28,6 +28,7 @@ done
 
 EPICS_DISPLAY_PATH=\${EPICS_DISPLAY_PATH#:}
 export EPICS_DISPLAY_PATH
+export EPICS_CA_MAX_ARRAY_BYTES 6000000
 
 medm -x -macro "P=\$prefix" xspress3.adl &
 medm -x -macro "ioc=\$prefix" ioc_stats_soft.adl &

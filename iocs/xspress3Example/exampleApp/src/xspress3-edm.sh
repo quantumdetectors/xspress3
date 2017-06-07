@@ -28,6 +28,7 @@ for module in "\${!locations[@]}" ; do
     fi
 done
 export EDMDATAFILES
+export EPICS_CA_MAX_ARRAY_BYTES 6000000
 
 edm -x -m "P=\$prefix" -port \$EPICS_CA_SERVER_PORT xspress3.edl &
 edm -x -m "ioc=\$prefix" -port \$EPICS_CA_SERVER_PORT ioc_stats_soft.edl &
