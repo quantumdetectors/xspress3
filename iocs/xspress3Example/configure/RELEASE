@@ -21,17 +21,14 @@
 
 TEMPLATE_TOP=$(EPICS_BASE)/templates/makeBaseApp/top
 
-SUPPORT=/home/xspress3/software/epics/R3.14.12.3/support
-
-ASYN=           $(SUPPORT)/asyn4-21
-AREA_DETECTOR=   $(SUPPORT)/areaDetectorR1-9-1
-BUSY=           $(SUPPORT)/busy-1-6
-CALC=           $(SUPPORT)/calc-3-2
-SSCAN=          $(SUPPORT)/sscan-2-9
-AUTOSAVE=	$(SUPPORT)/autosave-5-1
-DEVIOCSTATS=    $(SUPPORT)/devIocStats-3.1.11
-SPECTRAPLUGINS= $(SUPPORT)/spectraPlugins-1-6
+ASYN=            $(EPICS_BASE)
+AREA_DETECTOR=   $(EPICS_BASE)
+CALC=            $(EPICS_BASE)
+BUSY=            $(EPICS_BASE)
+AUTOSAVE=        $(EPICS_BASE)
+DEVIOCSTATS=     $(EPICS_BASE)
+SPECTRAPLUGINS=  $(EPICS_BASE)
 XSPRESS3=	$(TOP)/../..
 
 # EPICS_BASE usually appears last so other apps can override stuff:
-EPICS_BASE=/home/xspress3/software/epics/R3.14.12.3/base
+EPICS_BASE=/usr/lib/epics
