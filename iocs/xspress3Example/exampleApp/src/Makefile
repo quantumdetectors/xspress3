@@ -63,7 +63,7 @@ SYS_PROD_LIBS += GraphicsMagick++ GraphicsMagickWand GraphicsMagick
 example_LIBS += $(EPICS_BASE_IOC_LIBS)
 example_LIBS += NDFileMagick
 
-include $(AREA_DETECTOR)/ADApp/commonDriverMakefile
+include $(AREA_DETECTOR)/common/ADApp/commonDriverMakefile
 
 
 SCRIPTS += xspress3-medm.sh xspress3-edm.sh
