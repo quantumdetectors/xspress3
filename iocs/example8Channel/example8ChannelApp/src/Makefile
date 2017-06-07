@@ -8,8 +8,6 @@ include $(TOP)/configure/CONFIG
 
 PROD_IOC = example8Channel
 DBD += example8Channel.dbd
-example8Channel_DBD += base.dbd
-example8Channel_DBD += asyn.dbd
 example8Channel_DBD += busySupport.dbd
 example8Channel_DBD += ADSupport.dbd
 example8Channel_DBD += NDPluginSupport.dbd
@@ -59,4 +57,4 @@ SCRIPTS += xspress3-medm.sh xspress3-edm.sh
 SYS_BOOT_FLAGS+=-MXSPRESS3=$(abspath $(XSPRESS3))
 SYS_BOOT_FLAGS+=-MXSPRESS3_PREFIX=$(XSPRESS3_PREFIX)
 %.sh: ../%.sh
-	$(MSI) $(SYS_BOOT_FLAGS) $< | sed 's/\\\$$/$$/g' > $@
+	$(MSI3_15) $(SYS_BOOT_FLAGS) $< | sed 's/\\\$$/$$/g' > $@

@@ -15,4 +15,4 @@ USR_BOOT_FLAGS+=-MXSPRESS3_ABSPATH=$(abspath $(XSPRESS3))
 include $(TOP)/configure/RULES
 
 xspress3-ioc.sh: ../xspress3-ioc.sh
-	$(MSI) $(SYS_BOOT_FLAGS) $< > $@
+	$(MSI3_15) $(SYS_BOOT_FLAGS) $< > $@

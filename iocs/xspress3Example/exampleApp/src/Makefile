@@ -17,7 +17,6 @@ example_DBD += xspress3Support.dbd
 example_DBD += asSupport.dbd
 example_DBD += devIocStats.dbd
 example_DBD += calcSupport.dbd
-example_DBD += busyRecord.dbd
 example_DBD += busySupport.dbd
 example_DBD += ADSupport.dbd
 example_DBD += NDPluginSupport.dbd
@@ -73,5 +72,5 @@ SYS_BOOT_FLAGS+=-MXSPRESS3_PREFIX=$(XSPRESS3_PREFIX)
 include $(TOP)/configure/RULES
 
 %.sh: ../%.sh
-	$(MSI) $(SYS_BOOT_FLAGS) $< | sed 's/\\\$$/$$/g' > $@
+	$(MSI3_15) $(SYS_BOOT_FLAGS) $< | sed 's/\\\$$/$$/g' > $@
 
