@@ -6,7 +6,7 @@
 # Common prefixes
 
 # Module definitions
-AREA_DETECTOR = $(SUPPORT)/areaDetectorR1-9-1
+AREA_DETECTOR = $(EPICS_BASE)
 ASYN = $(EPICS_BASE)
 BUSY = $(EPICS_BASE)
 CALC = $(EPICS_BASE)
