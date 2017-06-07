@@ -19,7 +19,7 @@ SCRIPTS += xspress3-medm.sh xspress3-edm.sh
 SYS_BOOT_FLAGS+=-MXSPRESS3=$(abspath $(XSPRESS3))
 SYS_BOOT_FLAGS+=-MXSPRESS3_PREFIX=$(XSPRESS3_PREFIX)
 %.sh: ../%.sh
-	$(MSI) $(SYS_BOOT_FLAGS) $< | sed 's/\\\$$/$$/g' > $@
+	$(MSI3_15) $(SYS_BOOT_FLAGS) $< | sed 's/\\\$$/$$/g' > $@
 EOF
 
     sed -i 's/^dbLoadRecords\(.*\)$/dbLoadRecords( \1, "XSPRESS3_PREFIX=$(XSPRESS3_PREFIX)")/'  $installDir/iocBoot/ioc${appName}/st${appName}.src
