@@ -3,19 +3,19 @@
 prefix=$(XSPRESS3_PREFIX)
 
 declare -A locations
-locations[XSPRESS3]=$(XSPRESS3)
-locations[AREA_DETECTOR]=$(AREA_DETECTOR)
-locations[DEVIOCSTATS]=$(DEVIOCSTATS)
-locations[ASYN]=$(ASYN)
-locations[SPECTRAPLUGINS]=$(SPECTRAPLUGINS)
+locations[XSPRESS3]=$(EPICS_BASE)
+locations[AREA_DETECTOR]=$(EPICS_BASE)
+locations[DEVIOCSTATS]=$(EPICS_BASE)
+locations[ASYN]=$(EPICS_BASE)
+locations[SPECTRAPLUGINS]=$(EPICS_BASE)
 
 # Default edl display locations in source tree
 declare -A adls
-adls[XSPRESS3]=xspress3App/opi/adl/xspress3.adl
-adls[AREA_DETECTOR]=ADApp/op/adl/ADBase.adl
+adls[XSPRESS3]=op/adl/xspress3.adl
+adls[AREA_DETECTOR]=op/adl/ADBase.adl
 adls[DEVIOCSTATS]=op/adl/ioc_stats_soft.adl
-adls[ASYN]=opi/medm/asynRecord.adl
-adls[SPECTRAPLUGINS]=spectraPluginsApp/opi/adl/NDAttribute.adl
+adls[ASYN]=op/adl/asynRecord.adl
+adls[SPECTRAPLUGINS]=op/adl/NDAttribute.adl
 
 # The $ escapes the MSI macro substitution
 for module in "\${!locations[@]}" ; do

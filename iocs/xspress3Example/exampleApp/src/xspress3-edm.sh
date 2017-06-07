@@ -5,19 +5,19 @@ EPICS_CA_SERVER_PORT=5064
 EPICS_CA_REPEATER_PORT=5065
 
 declare -A locations
-locations[XSPRESS3]=$(XSPRESS3)
-locations[AREA_DETECTOR]=$(AREA_DETECTOR)
-locations[DEVIOCSTATS]=$(DEVIOCSTATS)
-locations[ASYN]=$(ASYN)
-locations[SPECTRAPLUGINS]=$(SPECTRAPLUGINS)
+locations[XSPRESS3]=$(EPICS_BASE)
+locations[AREA_DETECTOR]=$(EPICS_BASE)
+locations[DEVIOCSTATS]=$(EPICS_BASE)
+locations[ASYN]=$(EPICS_BASE)
+locations[SPECTRAPLUGINS]=$(EPICS_BASE)
 
 # Default edl display locations in source tree
 declare -A edls
-edls[XSPRESS3]=xspress3App/opi/edl/xspress3.edl
-edls[AREA_DETECTOR]=ADApp/op/edl/ADBase.edl
-edls[DEVIOCSTATS]=iocAdmin/srcDisplay/ioc_stats_soft.edl
-edls[ASYN]=opi/edm/asynRecord.edl
-edls[SPECTRAPLUGINS]=spectraPluginsApp/opi/edl/NDAttribute.edl
+edls[XSPRESS3]=op/edl/xspress3.edl
+edls[AREA_DETECTOR]=op/edl/ADBase.edl
+edls[DEVIOCSTATS]=op/edl/ioc_stats_soft.edl
+edls[ASYN]=op/edl/asynRecord.edl
+edls[SPECTRAPLUGINS]=op/edl/NDAttribute.edl
 
 # The $ escapes the MSI macro substitution
 for module in "\${!locations[@]}" ; do
