@@ -52,17 +52,19 @@ example_LIBS += busy
 example_LIBS += spectraPlugins
 
 #Needed for HDF5 plugin
-example_LIBS += NeXus
-example_LIBS += hdf5
-example_LIBS += sz
-example_LIBS += netCDF
 SYS_PROD_LIBS += png12
 SYS_PROD_LIBS += pthread
+SYS_PROD_LIBS += hdf5
+SYS_PROD_LIBS += z
+SYS_PROD_LIBS += netcdf
+SYS_PROD_LIBS += GraphicsMagick++ GraphicsMagickWand GraphicsMagick
 
 # We need to link this IOC Application against the EPICS Base libraries
 example_LIBS += $(EPICS_BASE_IOC_LIBS)
+example_LIBS += NDFileMagick
 
 include $(AREA_DETECTOR)/ADApp/commonDriverMakefile
+
 
 SCRIPTS += xspress3-medm.sh xspress3-edm.sh
 
