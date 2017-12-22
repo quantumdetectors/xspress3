@@ -43,6 +43,7 @@ protected:
     virtual int xsp3Api_close(int path);
     virtual int xsp3Api_config(int ncards, int num_tf, char* baseIPaddress, int basePort, char* baseMACaddress, int nchan, int createmodule, char* modname, int debug, int card_index);
     virtual int xsp3Api_format_run(int path, int chan, int aux1_mode, int res_thres, int aux2_cont, int disables, int aux2_mode, int nbits_eng);
+    virtual int xsp3Api_format_run_sub_frames(int path, int chan, int just_good, int res_thres, int disables, int nbits_eng, int num_sub_frames, int ts_divide);
     virtual int xsp3Api_getDeadtimeCorrectionParameters(int path, int chan, int *flags, double *processDeadTimeAllEventGradient,
                                                      double *processDeadTimeAllEventOffset, double *processDeadTimeInWindowOffset, double *processDeadTimeInWindowGradient);
     virtual char* xsp3Api_get_error_message();
@@ -73,9 +74,11 @@ protected:
     virtual int xsp3Api_itfg_stop(int path, int card);
     virtual int xsp3Api_has_itfg(int path, int card);
     virtual int xsp3Api_scaler_read(int path, uint32_t *dest, unsigned scaler, unsigned chan, unsigned t, unsigned n_scalers, unsigned n_chan, unsigned dt);
+    virtual int xsp3Api_scaler_read_sf(int path, uint32_t *dest, unsigned scaler, unsigned first_sf, unsigned chan, unsigned t, unsigned n_scalers, unsigned n_sf, unsigned n_chan, unsigned dt);
     virtual int xsp3Api_get_trigger_b(int path, unsigned chan, Xspress3_TriggerB *trig_b);
     virtual int xsp3Api_get_dtcfactor(int path, u_int32_t *scaData, double *dtcFactor, double *dtcAllEvent, unsigned chan);
     virtual int xsp3Api_get_generation(int path, int card);
+    virtual int xsp3Api_set_user_ts_sync_mode(int path, int card, int mode);
 
 private:
     std::vector<xsp3SimElement> detectors;

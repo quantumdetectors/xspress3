@@ -59,6 +59,20 @@ int xsp3Api::format_run(int path, int chan, int aux1_mode, int res_thres, int au
     return status;
 }
 
+
+int xsp3Api::format_run_sub_frames(int path, int chan, int just_good, int res_thres, int disables, int nbits_eng, int num_sub_frames, int ts_divide)
+{
+    int status;
+    asynPrint(this->pasynUser, XSP3IF_DEBUG, "xsp3_format_run_sub_frames( %d, %d, %d, %d, %d, %d, %d, %d ) = ", path, chan, just_good, res_thres,disables, nbits_eng, num_sub_frames, ts_divide);
+
+    status = xsp3Api_format_run_sub_frames( path, chan, just_good, res_thres, disables, nbits_eng, num_sub_frames, ts_divide );
+
+    asynPrint(this->pasynUser, XSP3IF_DEBUG, "%d\n", status );
+
+    return status;
+}
+
+
 int xsp3Api::getDeadtimeCorrectionParameters(int path, int chan, int *flags,
                                            double *processDeadTimeAllEventGradient,
                                            double *processDeadTimeAllEventOffset, 
@@ -386,6 +400,24 @@ int xsp3Api::scaler_read(int path, uint32_t *dest, unsigned scaler, unsigned cha
     return status;
 }
 
+
+int xsp3Api::scaler_read_sf(int path, uint32_t *dest, unsigned scaler, unsigned first_sf, unsigned chan, unsigned t, unsigned n_scalers, unsigned n_sf, unsigned n_chan, unsigned dt)
+{
+    int status;
+
+    status = xsp3Api_scaler_read_sf(path, dest, scaler, first_sf, chan, t, n_scalers, n_sf, n_chan, dt);
+
+    asynPrint(this->pasynUser, XSP3IF_DEBUG, "xsp3_scaler_read_sf( %d, [%u, %u, %u...], %u, %u, %u, %u, %u, %u, %u, %u ) = ",
+                 path,
+                 dest[0],dest[1],dest[2],
+                 scaler, first_sf, chan, t, n_scalers, n_sf, n_chan, dt);
+
+    asynPrint(this->pasynUser, XSP3IF_DEBUG, "%d\n", status );
+
+    return status;
+}
+
+
 int xsp3Api::get_trigger_b(int path, unsigned card, Xspress3_TriggerB *trig_b)
 {
     int status;
@@ -417,6 +449,20 @@ int xsp3Api::get_generation(int path, int card)
     asynPrint(this->pasynUser, XSP3IF_DEBUG, "xsp3_get_generation( %d, %d ) = ", path, card);
 
     status = xsp3Api_get_generation(path, card);
+
+    asynPrint(this->pasynUser, XSP3IF_DEBUG, "%d\n", status );
+
+    return status;
+
+}
+
+
+int xsp3Api::set_user_ts_sync_mode(int path, int card, int mode)
+{
+    int status;
+    asynPrint(this->pasynUser, XSP3IF_DEBUG, "xsp3_set_user_ts_sync_mode( %d, %d, %d ) = ", path, card, mode);
+
+    status = xsp3Api_set_user_ts_sync_mode(path, card, mode);
 
     asynPrint(this->pasynUser, XSP3IF_DEBUG, "%d\n", status );
 

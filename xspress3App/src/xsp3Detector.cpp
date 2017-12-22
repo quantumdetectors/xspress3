@@ -36,6 +36,13 @@ int xsp3Detector::xsp3Api_format_run(int path, int chan, int aux1_mode, int res_
     return status;
 }
 
+int xsp3Detector::xsp3Api_format_run_sub_frames( int path, int chan, int just_good, int res_thres, int disables, int nbits_eng, int num_sub_frames, int ts_divide )
+{
+    int status;
+    status = xsp3_format_sub_frames( path, chan, just_good, res_thres, disables, nbits_eng, num_sub_frames, ts_divide );
+    return status;   
+}
+
 int xsp3Detector::xsp3Api_getDeadtimeCorrectionParameters(int path, int chan, int *flags,
                                            double *processDeadTimeAllEventGradient,
                                            double *processDeadTimeAllEventOffset, 
@@ -221,6 +228,13 @@ int xsp3Detector::xsp3Api_scaler_read(int path, u_int32_t *dest, unsigned scaler
     return status;
 }
 
+int xsp3Detector::xsp3Api_scaler_read_sf(int path, uint32_t *dest, unsigned scaler, unsigned first_sf, unsigned chan, unsigned t, unsigned n_scalers, unsigned n_sf, unsigned n_chan, unsigned dt)
+{
+    int status;
+    status = xsp3_scaler_read_sf(path, dest, scaler, first_sf, chan, t, n_scalers, n_sf, n_chan, dt);
+    return status;   
+}
+
 int xsp3Detector::xsp3Api_get_trigger_b(int path, unsigned chan, Xspress3_TriggerB *trig_b)
 {
     int status;
@@ -238,5 +252,10 @@ int xsp3Detector::xsp3Api_get_dtcfactor(int path, u_int32_t *scaData, double *dt
 int xsp3Detector::xsp3Api_get_generation(int path, int card)
 {
     return xsp3_get_generation(path, card);
+}
+
+int xsp3Detector::xsp3Api_set_user_ts_sync_mode(int path, int card, int mode)
+{
+    return xsp3_set_user_ts_sync_mode(path, card, mode);
 }
 
