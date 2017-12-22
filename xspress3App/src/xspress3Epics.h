@@ -87,6 +87,10 @@
 #define xsp3PulsePerTriggerParamString           "XSP3_PPTRIGGER"
 #define xsp3ITFGStartParamString           "XSP3_ITFG_START"
 #define xsp3ITFGStopParamString           "XSP3_ITFG_STOP"
+#define xsp3SubframeResolutionParamString "XSP3_SUBFRAME_RESOLUTION"
+#define xsp3SubframeRateParamString       "XSP3_SUBFRAME_RATE"
+#define xsp3SubframeCyclesParamString     "XSP3_SUBFRAME_CYCLES"
+#define xsp3NumSubframesParamString       "XSP3_NUM_SUBFRAMES"
 //Settings for a channel
 #define xsp3ChanMcaRoi1LlmParamString     "XSP3_CHAN_ROI1_LLM"
 #define xsp3ChanMcaRoi2LlmParamString     "XSP3_CHAN_ROI2_LLM"
@@ -205,6 +209,7 @@ class Xspress3 : public ADDriver {
   asynStatus setupITFG(void); 
   asynStatus mapTriggerMode(int mode, int invert_f0, int invert_veto, int debounce, int *apiMode);
   asynStatus setTriggerMode(int mode, int invert_f0, int invert_veto, int debounce );
+  asynStatus setupSubframes(void);
 
   //Put private static data members here
   static const epicsInt32 ctrlDisable_;
@@ -342,6 +347,10 @@ class Xspress3 : public ADDriver {
   int xsp3PulsePerTriggerParam;
   int xsp3ITFGStartParam;
   int xsp3ITFGStopParam;
+  int xsp3SubframeResolutionParam;
+  int xsp3SubframeRateParam;
+  int xsp3SubframeCyclesParam;
+  int xsp3NumSubframesParam;
   int xsp3LastParam;
   #define XSP3_LAST_DRIVER_COMMAND xsp3LastParam
 

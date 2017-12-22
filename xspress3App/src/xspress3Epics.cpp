@@ -223,6 +223,13 @@ Xspress3::Xspress3(const char *portName, int numChannels, int numCards, const ch
   createParam(xsp3ChanDTPercentParamString, asynParamFloat64, &xsp3ChanDTPercentParam);
   createParam(xsp3ChanDTFactorParamString, asynParamFloat64, &xsp3ChanDTFactorParam);
 
+  // subframes
+  createParam(xsp3SubframeResolutionParamString, asynParamInt32,       &xsp3SubframeResolutionParam);
+  createParam(xsp3SubframeRateParamString,       asynParamInt32,       &xsp3SubframeRateParam);
+  createParam(xsp3SubframeCyclesParamString,     asynParamInt32,       &xsp3SubframeCyclesParam);
+  createParam(xsp3NumSubframesParamString,       asynParamInt32,       &xsp3NumSubframesParam);
+
+
   createParam(xsp3LastParamString,         asynParamInt32,       &xsp3LastParam);
   
   //Initialize non static, non const, data members
@@ -271,6 +278,14 @@ Xspress3::Xspress3(const char *portName, int numChannels, int numCards, const ch
   paramStatus = ((setIntegerParam(xsp3PulsePerTriggerParam, 0) == asynSuccess) && paramStatus);
   paramStatus = ((setIntegerParam(xsp3ITFGStartParam, 0) == asynSuccess) && paramStatus);
   paramStatus = ((setIntegerParam(xsp3ITFGStopParam, 0) == asynSuccess) && paramStatus);
+
+  paramStatus = ((setIntegerParam(xsp3SubframeResolutionParam, 0) == asynSuccess) && paramStatus);
+  paramStatus = ((setIntegerParam(xsp3SubframeRateParam, 0) == asynSuccess) && paramStatus);
+  paramStatus = ((setIntegerParam(xsp3SubframeCyclesParam, 0) == asynSuccess) && paramStatus);
+  paramStatus = ((setIntegerParam(xsp3NumSubframesParam, 1) == asynSuccess) && paramStatus);
+
+
+
   for (int chan=0; chan<numChannels_; chan++) {
     paramStatus = ((setIntegerParam(chan, xsp3ChanMcaRoi1LlmParam, 0) == asynSuccess) && paramStatus);
     paramStatus = ((setIntegerParam(chan, xsp3ChanMcaRoi2LlmParam, 0) == asynSuccess) && paramStatus);
@@ -1023,6 +1038,21 @@ asynStatus Xspress3::setupITFG(void)
                                        XSP3_ITFG_GAP_MODE_1US, XSP3_ITFG_TRIG_ACQ_PAUSED_ALL, 0, 0 );
     }
 
+
+    // Subframes
+    int resolution, rate, cycles;
+    getIntegerParam(xsp3SubframeResolutionParam, &resolution);
+    getIntegerParam(xsp3SubframeRateParam, &rate);
+    getIntegerParam(xsp3SubframeCyclesParam, &cycles);
+
+    // Setup sub frames if all three are none zero
+    if (resolution != 0 && rate != 0 && cycles != 0) {
+        xsp3_status = xsp3_itfg_setup2( xsp3_handle_, 0, num_frames, cycles, 
+                                        XSP3_ITFG_TRIG_MODE_HARDWARE, XSP3_ITFG_GAP_MODE_25NS, XSP3_ITFG_TRIG_ACQ_PAUSED_EXCL_FIRST, 0, 0);
+    }
+
+
+
     if (xsp3_status != XSP3_OK) {
         checkStatus(xsp3_status, " xsp3_itfg_setup", functionName);
         status = asynError;
@@ -1112,6 +1142,69 @@ asynStatus Xspress3::setTriggerMode(int mode, int invert_f0, int invert_veto, in
 
     return status;
 }
+
+
+
+// Subframe setup
+asynStatus Xspress3::setupSubframes(void)
+{
+    asynStatus status = asynSuccess;
+    const char *functionName = "Xspress3::setupSubframes";
+
+    int resolution, rate, cycles, xsp3_num_channels, xsp3_status;
+
+    getIntegerParam(xsp3SubframeResolutionParam, &resolution);
+    getIntegerParam(xsp3SubframeRateParam, &rate);
+    getIntegerParam(xsp3SubframeCyclesParam, &cycles);
+
+    // Setup sub frames if all three are none zero
+    if (resolution != 0 && rate != 0 && cycles != 0) {
+      // Set per "full" frame exposure time to number of repeats * frequency
+      double exposureTime = cycles * rate;
+      setDoubleParam(ADAcquireTime, exposureTime);
+
+      // number of subframes = period / resolution in ticks
+      int num_sub_frames = (1.0/rate)/(resolution*12.5e-6);
+      setIntegerParam(xsp3NumSubframesParam, num_sub_frames);
+
+      getIntegerParam(xsp3NumChannelsParam, &xsp3_num_channels);
+      for (int chan=0; chan<xsp3_num_channels; chan++) {
+        xsp3_status = xsp3->format_run_sub_frames(xsp3_handle_, chan, 0, 0, 0, 12, num_sub_frames, resolution);
+        if (xsp3_status < XSP3_OK) {
+          checkStatus(xsp3_status, "xsp3_format_run_sub_frames", functionName);
+          status = asynError;
+        }
+      }
+
+      xsp3_status = xsp3->set_user_ts_sync_mode(xsp3_handle_, 0, XSP3_USER_TSYNC_FRAMING);
+      if (xsp3_status < XSP3_OK) {
+        checkStatus(xsp3_status, "xsp3_set_user_ts_sync_mode", functionName);
+        status = asynError;
+      }
+
+      // setup trigger mode to iftg + debounce 2
+      int invert_f0, invert_veto;
+      getIntegerParam(xsp3InvertF0Param, &invert_f0);
+      getIntegerParam(xsp3InvertVetoParam, &invert_veto);
+      status = setTriggerMode( mbboTriggerINTERNAL_, invert_f0, invert_veto, 2 );
+
+
+    // Reset format_run to disable sub frames
+    } else {
+      setIntegerParam(xsp3NumSubframesParam, 1);
+
+      for (int chan=0; chan<xsp3_num_channels; chan++) {
+        xsp3_status = xsp3->format_run(xsp3_handle_, chan, 0, 0, 0, 0, 0, 12);
+        if (xsp3_status < XSP3_OK) {
+          checkStatus(xsp3_status, "xsp3_format_run", functionName);
+          status = asynError;
+        }
+      }
+    }
+
+    return status;
+}
+
 
 /**
  * Reimplementing this function from ADDriver to deal with integer values.
@@ -1511,6 +1604,21 @@ asynStatus Xspress3::writeInt32(asynUser *pasynUser, epicsInt32 value)
     xsp3->itfg_stop(xsp3_handle_, 0);
   }
 
+
+  // Subframe parameters
+  else if (function == xsp3SubframeResolutionParam) {
+    setupSubframes();
+  }
+
+  else if (function == xsp3SubframeRateParam) {
+    setupSubframes(); 
+  }
+
+  else if (function == xsp3SubframeCyclesParam) {
+    setupSubframes();
+  }
+
+
   else {
     asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, "%s No Matching Parameter In Xspress3 Driver.\n", functionName);
   }
@@ -1712,6 +1820,7 @@ void Xspress3::dataTask(void)
   epicsFloat64 timeout = 0.001;
   int numChannels = 0;
   int numFrames = 0;
+  int numSubframes = 0;
   int acquire = 0;
   int xsp3_status = 0;
   int status = 0;
@@ -1832,6 +1941,8 @@ void Xspress3::dataTask(void)
     getIntegerParam(xsp3NumChannelsParam, &numChannels);
     //Read how many frames we want to read out before stopping.
     getIntegerParam(ADNumImages, &numFrames);
+    // Read how many subframes we want to read out before stopping
+    getIntegerParam(xsp3NumSubframesParam, &numSubframes);
     //Do we want corrected or uncorrected data?
     getIntegerParam(xsp3DtcEnableParam, &dtcEnable);
 
@@ -1864,7 +1975,7 @@ void Xspress3::dataTask(void)
               checkStatus(xsp3_status, "xsp3_dma_check_desc", functionName);
               status = asynError;
           }
-          frame_count = xsp3_status;
+          frame_count = xsp3_status * numSubframes;
           setIntegerParam(xsp3FrameCountParam, frame_count-lastFrameCount);
           asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, "%s frame_count: %d.\n", functionName, frame_count);
       } else {
@@ -1926,12 +2037,12 @@ void Xspress3::dataTask(void)
                 status = asynError;
               }
             } else {
-              xsp3_status = xsp3->histogram_read4d(xsp3_handle_, reinterpret_cast<u_int32_t*>(pMCA_INT), 0, 0, 0, frameOffset, maxSpectra, 1, numChannels, remainingFrames);
+              xsp3_status = xsp3->histogram_read4d(xsp3_handle_, reinterpret_cast<u_int32_t*>(pMCA_INT), 0, 0, 0, frameOffset, maxSpectra, numSubframes, numChannels, remainingFrames/numSubframes);
               if (xsp3_status != XSP3_OK) {
                 checkStatus(xsp3_status, "xsp3_histogram_read4d", functionName);
                 status = asynError;
               }
-              xsp3_status = xsp3->scaler_read(xsp3_handle_, reinterpret_cast<u_int32_t*>(pSCA_INT), 0, 0, frameOffset, XSP3_SW_NUM_SCALERS, numChannels, remainingFrames);
+              xsp3_status = xsp3->scaler_read_sf(xsp3_handle_, reinterpret_cast<u_int32_t*>(pSCA_INT), 0, 0, 0, frameOffset, XSP3_SW_NUM_SCALERS, numSubframes, numChannels, remainingFrames/numSubframes);
               if (xsp3_status != XSP3_OK) {
                 checkStatus(xsp3_status, "xsp3_scaler_read", functionName);
                 status = asynError;
