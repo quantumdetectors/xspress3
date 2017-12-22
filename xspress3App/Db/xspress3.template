@@ -249,6 +249,50 @@ record(longout, "$(P)$(R)IFTG_START")
    field(VAL,  "0")
 }
 
+
+
+# ///
+# /// Set the subframe resolution (in ticks)
+# ///
+record(longout, "$(P)$(R)SUBFRAME_RESOLUTION")
+{
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))XSP3_SUBFRAME_RESOLUTION")
+   field(VAL,  "0")
+}
+
+# ///
+# /// Set the subframe cycle rate
+# ///
+record(longout, "$(P)$(R)SUBFRAME_RATE")
+{
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))XSP3_SUBFRAME_RATE")
+   field(VAL,  "0")
+}
+
+# ///
+# /// Set the subframe no. cycles
+# ///
+record(longout, "$(P)$(R)SUBFRAME_CYCLES")
+{
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))XSP3_SUBFRAME_CYCLES")
+   field(VAL,  "0")
+}
+
+# ///
+# /// Set the subframe no. cycles
+# ///
+record(longout, "$(P)$(R)NUM_SUBFRAMES")
+{
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))XSP3_NUM_SUBFRAMES")
+   field(VAL,  "0")
+}
+
+
+
 # ///
 # /// Set the fixed time register, in Software trigger mode.
 # /// This sets the number of the first time frame (not normally used).
