@@ -284,11 +284,12 @@ record(longout, "$(P)$(R)SUBFRAME_CYCLES")
 # ///
 # /// Set the subframe no. cycles
 # ///
-record(longout, "$(P)$(R)NUM_SUBFRAMES")
+record(longin, "$(P)$(R)NUM_SUBFRAMES_RBV")
 {
+   field(PINI, "YES")
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))XSP3_NUM_SUBFRAMES")
-   field(VAL,  "0")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))XSP3_NUM_SUBFRAMES")
+   field(SCAN, "I/O Intr")
 }
 
 
