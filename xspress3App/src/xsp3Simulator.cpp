@@ -251,7 +251,7 @@ int xsp3Simulator::xsp3Api_get_generation(int path, int card)
     return 0;
 }
 
-int xsp3Api_set_user_ts_sync_mode(int path, int card, int mode)
+int xsp3Simulator::xsp3Api_set_user_ts_sync_mode(int path, int card, int mode)
 {
     return 0;
 }
