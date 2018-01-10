@@ -1158,6 +1158,7 @@ asynStatus Xspress3::setupSubframes(void)
     getIntegerParam(xsp3SubframeResolutionParam, &resolution);
     getIntegerParam(xsp3SubframeRateParam, &rate);
     getIntegerParam(xsp3SubframeCyclesParam, &cycles);
+    getIntegerParam(xsp3NumChannelsParam, &xsp3_num_channels);
 
     printf("setupSubframes: %d %d %d\n", resolution, rate, cycles);
 
@@ -1174,21 +1175,26 @@ asynStatus Xspress3::setupSubframes(void)
       setDoubleParam(ADAcquireTime, exposureTime);
 
       // number of subframes = period / resolution in ticks
-      int num_sub_frames = (1.0/rate)/(resolution*12.5e-6);
+      int max_num_frames = 0;
+      getIntegerParam(xsp3NumFramesDriverParam, &max_num_frames);
+      
+      int num_sub_frames = (1.0/rate)/(resolution*12.5e-9);
+      if (num_sub_frames > max_num_frames) {
+        num_sub_frames = max_num_frames;
+        printf("Warning no. of subframes > max frames, clamping to %d", max_num_frames);
+      }
+
       setIntegerParam(xsp3NumSubframesParam, num_sub_frames);
       printf("num_sub_frames: %d\n", num_sub_frames);
 
       // clamp num_frames as maxFrames is reduced by numSubFrames
       int num_frames = 0;
-      int max_num_frames = 0;
       getIntegerParam(ADNumImages, &num_frames);
-      getIntegerParam(xsp3NumFramesDriverParam, &max_num_frames);
+      
       if (num_frames > max_num_frames/num_sub_frames) {
           setIntegerParam(ADNumImages, max_num_frames/num_sub_frames);
       }
 
-
-      getIntegerParam(xsp3NumChannelsParam, &xsp3_num_channels);
       for (int chan=0; chan<xsp3_num_channels; chan++) {
         xsp3_status = xsp3->format_run_sub_frames(xsp3_handle_, chan, 0, 0, 0, 12, num_sub_frames, resolution);
         if (xsp3_status < XSP3_OK) {
