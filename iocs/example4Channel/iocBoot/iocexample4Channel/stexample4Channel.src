@@ -396,6 +396,7 @@ iocInit
 dbpf("$(XSPRESS3_PREFIX):HDF5:FileTemplate", "%s%s%d.hdf5")
 dbpf("$(XSPRESS3_PREFIX):HDF5:FileWriteMode", "Stream")
 dbpf("$(XSPRESS3_PREFIX):HDF5:EnableCallbacks", "Enable")
+dbpf("$(XSPRESS3_PREFIX):HDF5:BlockingCallbacks", "Yes")
 
 #Set up the PROC plugin spectra summing
 dbpf("$(XSPRESS3_PREFIX):PROC:EnableFilter", "Enable")
@@ -406,6 +407,7 @@ dbpf("$(XSPRESS3_PREFIX):PROC:EnableCallbacks", "Enable")
 dbpf("$(XSPRESS3_PREFIX):C1_PluginControlVal", "Enabled")
 
 #Set up the ROI parameters
+dbpf("$(XSPRESS3_PREFIX):ROIDATA:BlockingCallbacks", "Yes")
 dbpf("$(XSPRESS3_PREFIX):ROIDATA:EnableX", "Enable")
 dbpf("$(XSPRESS3_PREFIX):ROIDATA:EnableY", "Enable")
 
@@ -484,7 +486,7 @@ dbpf $(XSPRESS3_PREFIX):NDAttributesFile, example4ChannelApp/data/XSP3.xml
 # disable DTC by default
 dbpf("$(XSPRESS3_PREFIX):CTRL_DTC", "0")
 
-
+#asynSetTraceMask("XSP3", -1, 0x10)
 
 
 
