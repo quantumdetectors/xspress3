@@ -2009,9 +2009,14 @@ void Xspress3::dataTask(void)
               checkStatus(xsp3_status, "xsp3_dma_check_desc", functionName);
               status = asynError;
           }
+
+          // Need to clamp this as its possible another set of subframes 
+          // have been acquired before histogram_stop called (readout is blocking)
+          if (xsp3_status > numFrames/numSubframes) xsp3_status = numFrames/numSubframes;
+
           frame_count = xsp3_status * numSubframes;
           setIntegerParam(xsp3FrameCountParam, frame_count-lastFrameCount);
-          asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, "%s frame_count: %d.\n", functionName, frame_count);
+          asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, "%s frame_count: %d. [status: %d subframes: %d]\n", functionName, frame_count, xsp3_status, numSubframes);
       } else {
         frame_count = 0;
       }
@@ -2036,6 +2041,7 @@ void Xspress3::dataTask(void)
           acquire=0;
           setIntegerParam(ADStatus, ADStatusAborted);
         } else if (frameCounter >= numFrames) {
+          asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, "%s Acquisition Completed.\n", functionName);
           completed = true;
           remainingFrames = numFrames - (frameCounter - framesToReadOut);
           xsp3_status = xsp3->histogram_stop(xsp3_handle_, 0);
