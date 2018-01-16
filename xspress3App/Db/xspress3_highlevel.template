@@ -15,18 +15,36 @@
 #Add a FLNK to the NumImages record, to automatically set the HDF plugin NumCapture
 record(longout, "$(P)$(R)NumImages")
 {
+   field(FLNK, "$(HDF)NumCapture_CALC2.PROC")
+}
+record(longin, "$(P)$(R)NUM_SUBFRAMES_RBV")
+{
+   field(FLNK, "$(HDF)NumCapture_CALC2.PROC")
+}
+
+# EPICS does not respect field update ordering
+# Updating NUM_SUBFRAMES and immediately after NumImages results in a stale value 
+# for NumImages
+# Use an intermediate CALC with a delay
+record(calcout, "$(HDF)NumCapture_CALC2")
+{
+   field(CALC, "1")
+   field(OOPT, "Every Time")
+   field(ODLY, ".1")
+   field(DOPT, "Use CALC")
    field(FLNK, "$(HDF)NumCapture_CALC.PROC")
 }
+
 record(calcout, "$(HDF)NumCapture_CALC")
 {
-   field(INPA, "$(P)$(R)NumImages.VAL")
+   field(INPA, "$(P)$(R)NumImages_RBV")
+   field(INPB, "$(P)$(R)NUM_SUBFRAMES_RBV")
    field(OUT, "$(HDF)NumCapture.VAL")
-   field(CALC, "A")
+   field(CALC, "A*B")
    field(OOPT, "Every Time")
    field(DOPT, "Use CALC")
    field(FLNK, "$(HDF)NumCapture.PROC")
 }
-
 
 #Turn off the default alarm state of the HDF plugin Capture_RBV PV
 record(bi, $(HDF)Capture_RBV)
