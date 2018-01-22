@@ -2093,13 +2093,27 @@ void Xspress3::dataTask(void)
               epicsInt32 *pDATA_INT = pMCA_INT;
               epicsFloat64 *pSCA_DATA = pSCA;
               epicsInt32 *pSCA_DATA_INT = pSCA_INT;
-              for (int frame=frameOffset; frame<(frameOffset+remainingFrames); ++frame) {
+              for (int frame=frameOffset; frame<((frameOffset+remainingFrames)/numSubframes); ++frame) {
                 for (int chan=0; chan<numChannels; ++chan) {
-                  for (int bin=0; bin<maxSpectra; ++bin) {
-                    *(pDATA++) = static_cast<epicsFloat64>(*(pDATA_INT++));
-                  }
-                  for (int sca=0; sca<XSP3_SW_NUM_SCALERS; ++sca) {
-                    *(pSCA_DATA++) = static_cast<epicsFloat64>(*(pSCA_DATA_INT++));
+                  for (int sf=0; sf<numSubframes; ++sf) {
+                    for (int bin=0; bin<maxSpectra; ++bin) {
+                      // need to reorder data because of subframes
+                      int new_fn = (frame * numSubframes) + sf
+                      int no_f = maxSpectra * numChannels * new_fn
+                      int no_ch = maxSpectra * chan;
+                      int new_offset = no_f + no_ch + bin;
+                      
+                      pDATA[new_offset] = static_cast<epicsFloat64>(*(pDATA_INT++));
+                    }
+
+                    for (int sca=0; sca<XSP3_SW_NUM_SCALERS; ++sca) {
+                      int new_fn = (frame * numSubframes) + sf
+                      int no_f = XSP3_SW_NUM_SCALERS * numChannels * new_fn
+                      int no_ch = XSP3_SW_NUM_SCALERS * chan;
+                      int new_offset = no_f + no_ch + sca;
+
+                      pSCA_DATA[new_offset] = static_cast<epicsFloat64>(*(pSCA_DATA_INT++));
+                    }
                   }
                 }
               }
