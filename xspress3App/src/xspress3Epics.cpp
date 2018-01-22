@@ -2098,8 +2098,8 @@ void Xspress3::dataTask(void)
                   for (int sf=0; sf<numSubframes; ++sf) {
                     for (int bin=0; bin<maxSpectra; ++bin) {
                       // need to reorder data because of subframes
-                      int new_fn = (frame * numSubframes) + sf
-                      int no_f = maxSpectra * numChannels * new_fn
+                      int new_fn = (frame * numSubframes) + sf;
+                      int no_f = maxSpectra * numChannels * new_fn;
                       int no_ch = maxSpectra * chan;
                       int new_offset = no_f + no_ch + bin;
                       
@@ -2107,8 +2107,8 @@ void Xspress3::dataTask(void)
                     }
 
                     for (int sca=0; sca<XSP3_SW_NUM_SCALERS; ++sca) {
-                      int new_fn = (frame * numSubframes) + sf
-                      int no_f = XSP3_SW_NUM_SCALERS * numChannels * new_fn
+                      int new_fn = (frame * numSubframes) + sf;
+                      int no_f = XSP3_SW_NUM_SCALERS * numChannels * new_fn;
                       int no_ch = XSP3_SW_NUM_SCALERS * chan;
                       int new_offset = no_f + no_ch + sca;
 
