@@ -1018,10 +1018,11 @@ asynStatus Xspress3::setupITFG(void)
     double exposureTime;
     int xsp3_status=XSP3_OK;
 
+    getIntegerParam(ADNumImages, &num_frames);
+
     getIntegerParam(xsp3TriggerModeParam, &trigger_mode);
     if (trigger_mode == mbboTriggerINTERNAL_ &&
         xsp3->has_itfg(xsp3_handle_, 0) > 0 ) {
-        getIntegerParam(ADNumImages, &num_frames);
         getDoubleParam(ADAcquireTime, &exposureTime);
         xsp3_status = xsp3->itfg_setup( xsp3_handle_, 0, num_frames, 
                                        (u_int32_t) floor(exposureTime*80E6+0.5),
@@ -1031,8 +1032,6 @@ asynStatus Xspress3::setupITFG(void)
     getIntegerParam(xsp3PulsePerTriggerParam, &ppt);
     if (trigger_mode == mbboTriggerTTLVETO_ && 
         (xsp3->has_itfg(xsp3_handle_, 0) > 0) && ppt) {
-
-        getIntegerParam(ADNumImages, &num_frames);
         printf("setupIFTG - Pulse per trigger: %d\n", ppt);
         xsp3_status = xsp3->itfg_setup2( xsp3_handle_, 0, num_frames, 
                                        (u_int32_t) ppt,
@@ -2299,6 +2298,9 @@ void Xspress3::dataTask(void)
 
       frame_count = 0;
       framesToReadOut = 0;
+
+      // short delay to stop the thread hammering the IOC
+      epicsThreadSleep(.1);
 
     } //end of while(acquire)
 
