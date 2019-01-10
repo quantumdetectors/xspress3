@@ -8,8 +8,6 @@ include $(TOP)/configure/CONFIG
 
 PROD_IOC = example4Channel
 DBD += example4Channel.dbd
-example4Channel_DBD += base.dbd
-example4Channel_DBD += asyn.dbd
 example4Channel_DBD += busySupport.dbd
 example4Channel_DBD += ADSupport.dbd
 example4Channel_DBD += NDPluginSupport.dbd
@@ -27,15 +25,6 @@ example4Channel_LIBS += img_mod
 example4Channel_LIBS += calc
 example4Channel_LIBS += NDPlugin
 example4Channel_LIBS += ADBase
-example4Channel_LIBS += netCDF
-example4Channel_LIBS += cbfad
-example4Channel_LIBS += NeXus
-example4Channel_LIBS += hdf5
-example4Channel_LIBS += sz
-example4Channel_LIBS += PvAPI
-example4Channel_LIBS += GraphicsMagick++
-example4Channel_LIBS += GraphicsMagickWand
-example4Channel_LIBS += GraphicsMagick
 example4Channel_LIBS += busy
 example4Channel_LIBS += asyn
 example4Channel_SYS_LIBS += rt
@@ -50,7 +39,13 @@ example4Channel_SYS_LIBS += bz2
 example4Channel_SYS_LIBS += Xext
 example4Channel_SYS_LIBS += freetype
 example4Channel_SYS_LIBS += pthread
+example4Channel_SYS_LIBS += netcdf
+example4Channel_SYS_LIBS += cbf
+example4Channel_SYS_LIBS += hdf5
+example4Channel_SYS_LIBS += z
+example4Channel_SYS_LIBS += GraphicsMagick++ GraphicsMagickWand GraphicsMagick
 example4Channel_LIBS += $(EPICS_BASE_IOC_LIBS)
+example4Channel_LIBS += NDFileMagick
 example4Channel_SRCS += example4ChannelMain.cpp
 
 include $(TOP)/configure/RULES
@@ -59,4 +54,4 @@ SCRIPTS += xspress3-medm.sh xspress3-edm.sh
 SYS_BOOT_FLAGS+=-MXSPRESS3=$(abspath $(XSPRESS3))
 SYS_BOOT_FLAGS+=-MXSPRESS3_PREFIX=$(XSPRESS3_PREFIX)
 %.sh: ../%.sh
-	$(MSI) $(SYS_BOOT_FLAGS) $< | sed 's/\\\$$/$$/g' > $@
+	$(MSI3_15) $(SYS_BOOT_FLAGS) $< | sed 's/\\\$$/$$/g' > $@
