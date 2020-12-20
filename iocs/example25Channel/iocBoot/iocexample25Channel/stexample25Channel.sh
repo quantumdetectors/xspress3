@@ -13,4 +13,4 @@ if [ -n "$1" ]; then
         exit 1
     }
 fi
-exec ./example32Channel stexample32Channel.boot
+exec ./example25Channel stexample25Channel.boot

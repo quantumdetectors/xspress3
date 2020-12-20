@@ -66,8 +66,6 @@ pattern { P, R, PORT, ADDR, TIMEOUT, CHAN, NELEMENTS }
     { "$(XSPRESS3_PREFIX)", ":", "XSP3", "22", "5", "23", "16384" }
     { "$(XSPRESS3_PREFIX)", ":", "XSP3", "23", "5", "24", "16384" }
     { "$(XSPRESS3_PREFIX)", ":", "XSP3", "24", "5", "25", "16384" }
-    { "$(XSPRESS3_PREFIX)", ":", "XSP3", "25", "5", "26", "16384" }
-    
 }
 
 # Macros:
